@@ -42,21 +42,25 @@ export async function startQuiz(gameState) {
     gameState.score = 0;
     gameState.answers = [];
 
-    const currentQuestion = questions[gameState.currentQuestionIndex];
-    const userChoice = await askQuestion(currentQuestion, gameState);
-    const isCorrect = userChoice === currentQuestion.correctAnswer;
+    while (gameState.currentQuestionIndex < questions.length) {
+        const currentQuestion = questions[gameState.currentQuestionIndex];
+        const userChoice = await askQuestion(currentQuestion, gameState.currentQuestionIndex + 1);
+        const isCorrect = userChoice === currentQuestion.correctAnswer;
 
-    if (isCorrect) {
-        gameState.score++;
-        console.log(chalk.green("Correct!"));
-    } else {
-        console.log(chalk.red("Incorrect"));
+        if (isCorrect) {
+            gameState.score++;
+            console.log(chalk.green("Correct!"));
+        } else {
+            console.log(chalk.red("Incorrect"));
+        }
+        gameState.currentQuestionIndex++;
     }
+    //show final results of the quiz
 }
 
-export async function askQuestion(question, gameState) {
+export async function askQuestion(question, questionNumber) {
     const userChoice = await select({
-        message: question.question,
+        message: `Question ${questionNumber}: ${question.question}`,
         choices: question.choices.map((choice) => ({
             name: choice,
             value: choice,
