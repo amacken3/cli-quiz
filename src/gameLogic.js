@@ -37,15 +37,47 @@ export async function showMainMenu(gameState) {
       process.exit(0);
   }
 }
-
+//quiz starter
 export async function startQuiz(gameState) {
     gameState.currentQuestionIndex = 0;
     gameState.score = 0;
     gameState.answers = [];
 
+    const quizStartTime = Date.now();
+
     while (gameState.currentQuestionIndex < questions.length) {
+        const elapsedTime = Date.now() - quizStartTime;
+        const remainingQuizTime = 150000 - elapsedTime;
+
+        if (elapsedTime >= 150000) {
+            console.log(chalk.red("Time's up for the quiz!"));
+            break;
+        }
         const currentQuestion = questions[gameState.currentQuestionIndex];
-        const userChoice = await askQuestion(currentQuestion, gameState.currentQuestionIndex + 1);
+        const userChoice = await askQuestion(
+            currentQuestion,
+            gameState.currentQuestionIndex + 1,
+            30000,
+            remainingQuizTime
+        );
+//timeout block
+        if (userChoice === "quizTimeout") {
+            console.log(chalk.red("Time's up for the quiz!"));
+            break;
+        }
+
+        if (userChoice === "questionTimeout") {
+            console.log(chalk.red("Time's up for this question."));
+            gameState.answers.push({
+            question: currentQuestion.question,
+            userAnswer: "Timed out",
+            correctAnswer: currentQuestion.correctAnswer,
+            isCorrect: false,
+        });
+        gameState.currentQuestionIndex++;
+        continue;
+    }
+
         const isCorrect = userChoice === currentQuestion.correctAnswer;
 
         if (isCorrect) {
@@ -65,14 +97,27 @@ export async function startQuiz(gameState) {
     showFinalResults(gameState);
 }
 //question structure setup
-export async function askQuestion(question, questionNumber) {
-    const userChoice = await select({
+export async function askQuestion(question, questionNumber, timeLimit, remainingQuizTime) {
+    const effectiveTimeLimit = Math.min(timeLimit, remainingQuizTime);
+    const questionPrompt = select({
         message: `Question ${questionNumber}: ${question.question}`,
         choices: question.choices.map((choice) => ({
             name: choice,
             value: choice,
         })),
     });
+//timeout block
+    const timeoutPromise = new Promise((resolve) => {
+        setTimeout(() => {
+            if (remainingQuizTime <= timeLimit) {
+            resolve("quizTimeout");
+            } else {
+            resolve("questionTimeout");
+            }
+        }, effectiveTimeLimit);
+    });
+
+    const userChoice = await Promise.race([questionPrompt, timeoutPromise]);
 
     return userChoice;
 }
