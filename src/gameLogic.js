@@ -55,9 +55,9 @@ export async function startQuiz(gameState) {
         }
         gameState.currentQuestionIndex++;
     }
-    //show final results of the quiz
+    showFinalResults(gameState);
 }
-
+//question structure setup
 export async function askQuestion(question, questionNumber) {
     const userChoice = await select({
         message: `Question ${questionNumber}: ${question.question}`,
@@ -68,4 +68,19 @@ export async function askQuestion(question, questionNumber) {
     });
 
     return userChoice;
+}
+//shows final results of quiz
+export function showFinalResults(gameState) {
+    console.log("Quiz Complete!");
+    console.log(`Final Score: ${gameState.score} / ${questions.length}`);
+}
+//displays current score
+export function showScore(gameState) {
+    console.log(`Current Score: ${gameState.score} / ${questions.length}`);
+}
+//allows for quiz mem to be reset manually by user
+export function resetQuiz(gameState) {
+    gameState.currentQuestionIndex = 0;
+    gameState.score = 0;
+    gameState.answers = [];
 }
