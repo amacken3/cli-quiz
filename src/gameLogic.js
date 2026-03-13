@@ -17,6 +17,7 @@ export async function showMainMenu(gameState) {
   switch (action) {
     case "start":
       await startQuiz(gameState);
+      await showMainMenu(gameState);
       break;
     case "stats":
       showScore(gameState);
@@ -53,6 +54,12 @@ export async function startQuiz(gameState) {
         } else {
             console.log(chalk.red("Incorrect"));
         }
+        gameState.answers.push({
+            question: currentQuestion.question,
+            userAnswer: userChoice,
+            correctAnswer: currentQuestion.correctAnswer,
+            isCorrect: isCorrect,
+        });
         gameState.currentQuestionIndex++;
     }
     showFinalResults(gameState);
@@ -73,6 +80,15 @@ export async function askQuestion(question, questionNumber) {
 export function showFinalResults(gameState) {
     console.log("Quiz Complete!");
     console.log(`Final Score: ${gameState.score} / ${questions.length}`);
+
+    for (const answer of gameState.answers) {
+        console.log(`Question: ${answer.question}`);
+        console.log(`Your answer: ${answer.userAnswer}`);
+
+        if (!answer.isCorrect) {
+            console.log(chalk.red(`Correct answer: ${answer.correctAnswer}`));
+        }
+    }
 }
 //displays current score
 export function showScore(gameState) {
