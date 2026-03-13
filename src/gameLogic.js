@@ -37,6 +37,31 @@ export async function showMainMenu(gameState) {
   }
 }
 
-//export async function startQuiz(gameState) {
+export async function startQuiz(gameState) {
+    gameState.currentQuestionIndex = 0;
+    gameState.score = 0;
+    gameState.answers = [];
 
-//}
+    const currentQuestion = questions[gameState.currentQuestionIndex];
+    const userChoice = await askQuestion(currentQuestion, gameState);
+    const isCorrect = userChoice === currentQuestion.correctAnswer;
+
+    if (isCorrect) {
+        gameState.score++;
+        console.log(chalk.green("Correct!"));
+    } else {
+        console.log(chalk.red("Incorrect"));
+    }
+}
+
+export async function askQuestion(question, gameState) {
+    const userChoice = await select({
+        message: question.question,
+        choices: question.choices.map((choice) => ({
+            name: choice,
+            value: choice,
+        })),
+    });
+
+    return userChoice;
+}
