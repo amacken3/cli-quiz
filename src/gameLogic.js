@@ -42,14 +42,14 @@ export async function startQuiz(gameState) {
     gameState.currentQuestionIndex = 0;
     gameState.score = 0;
     gameState.answers = [];
-
+//timer while block
     const quizStartTime = Date.now();
 
     while (gameState.currentQuestionIndex < questions.length) {
         const elapsedTime = Date.now() - quizStartTime;
-        const remainingQuizTime = 150000 - elapsedTime;
+        const remainingQuizTime = 120000 - elapsedTime;
 
-        if (elapsedTime >= 150000) {
+        if (elapsedTime >= 120000) {
             console.log(chalk.red("Time's up for the quiz!"));
             break;
         }
@@ -123,15 +123,19 @@ export async function askQuestion(question, questionNumber, timeLimit, remaining
 }
 //shows final results of quiz
 export function showFinalResults(gameState) {
+    console.log("");
     console.log("Quiz Complete!");
+    console.log("");
     console.log(`Final Score: ${gameState.score} / ${questions.length}`);
 
     for (const answer of gameState.answers) {
-        console.log(`Question: ${answer.question}`);
+        console.log(chalk.blue(`Question: ${answer.question}`));
+        console.log("");
         console.log(`Your answer: ${answer.userAnswer}`);
 
         if (!answer.isCorrect) {
-            console.log(chalk.red(`Correct answer: ${answer.correctAnswer}`));
+            console.log(chalk.green(`Correct answer: ${answer.correctAnswer}`));
+            console.log("");
         }
     }
 }
