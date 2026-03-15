@@ -47,9 +47,9 @@ export async function startQuiz(gameState) {
 
     while (gameState.currentQuestionIndex < questions.length) {
         const elapsedTime = Date.now() - quizStartTime;
-        const remainingQuizTime = 120000 - elapsedTime;
+        const remainingQuizTime = 150000 - elapsedTime;
 
-        if (elapsedTime >= 120000) {
+        if (elapsedTime >= 150000) {
             console.log(chalk.red("Time's up for the quiz!"));
             break;
         }

@@ -23,6 +23,16 @@ const questions = [
         question: "What year did the Falador Massacre take place in RuneScape?",
         choices: ["2004", "2005", "2006", "2007"],
         correctAnswer: "2006"
+    },
+    {
+        question: "Which skill is used to catch sharks in OSRS?",
+        choices: ["Cooking", "Fishing", "Hunter", "Farming"],
+        answer: "Fishing"
+    },
+    {
+        question: "What combat style is strongest against melee in the combat triangle?",
+        choices: ["Magic", "Ranged", "Prayer", "Defence"],
+        answer: "Magic"
     }
 ];
 
